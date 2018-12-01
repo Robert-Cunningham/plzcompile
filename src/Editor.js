@@ -12,7 +12,7 @@ class Editor extends React.Component {
         super(props)
 
         this.state = {
-            value: ""
+            value: props.challenge.initial
         }
     }
 
@@ -24,7 +24,7 @@ class Editor extends React.Component {
     }
 
     onClickDone = () => {
-        let result = judgeSubmission(this.state.value, challenges[0])
+        let result = judgeSubmission(this.state.value, this.props.challenge)
         console.log(result)
         if (result.passed) {
             this.props.onSolve()

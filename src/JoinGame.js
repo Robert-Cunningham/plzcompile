@@ -1,5 +1,5 @@
 import React from 'react'
-import {Dialog, DialogTitle, TextField, DialogActions, Button, DialogContent} from '@material-ui/core'
+import {Dialog, DialogTitle, TextField, DialogActions, Button, DialogContent, LinearProgress} from '@material-ui/core'
 
 class JoinGame extends React.Component {
     constructor(props) {
@@ -8,7 +8,7 @@ class JoinGame extends React.Component {
         this.state = {
             name: "",
             mode: "name",
-            room: Math.round(Math.random() * 100),
+            room: 0,//Math.round(Math.random() * 100),
             peers: [],
             roomSelection: ""
         }
@@ -30,7 +30,7 @@ class JoinGame extends React.Component {
                         <TextField label="Name" placeholder="Pepe" value={this.state.name} onChange={(e) => this.setState({name: e.target.value})}></TextField>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.onSelectName}>Next</Button>
+                        <Button disabled={this.state.name.length === 0} onClick={this.onSelectName}>Next</Button>
                     </DialogActions>
                 </Dialog>
             </div>
@@ -54,6 +54,11 @@ class JoinGame extends React.Component {
         })
     }
 
+    onReady = () => {
+        this.props.onReady()
+        this.setState({waiting: true})
+    }
+
 
     renderRooms() {
         return (
@@ -73,9 +78,12 @@ class JoinGame extends React.Component {
                         <ul>
                             {this.state.peers.map((p, i) => <li key={i}>{p.name}</li>)}
                         </ul>
+
+                        {this.state.waiting && "Waiting for other players to ready up."}
+                        {this.state.waiting && <LinearProgress />}
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.props.onReady} disabled={this.state.peers.length === 0}>Ready</Button>
+                        <Button onClick={this.onReady} disabled={this.state.peers.length === 0}>Ready</Button>
                     </DialogActions>
                 </Dialog>
             </div>

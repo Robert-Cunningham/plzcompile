@@ -46,15 +46,52 @@ io.on('connection', socket => {
         })
     })
 
+    getOtherPlayersInRoom = (roomID) => {
+        let out = []
+        Object.keys(socketList).map(uuid => { //update the recent connectee's list
+            let s = socketList[uuid]
+            if (s.roomID === roomID && uuid !== UUID) {
+                out.push(uuid)
+            }
+        })
+
+        return out
+    }
+
+    getAllPlayersInRoom = roomID => {
+        if (socketList[UUID].roomID === roomID) {
+            return getOtherPlayersInRoom(roomID).concat(UUID)
+        } else {
+            return getOtherPlayersInRoom(roomID)
+        }
+    }
 
     socket.on('ready', () => {
-        let room = socketList[UUID].roomID
-        io.in(room).emit('go')
+
+        console.log(socketList[UUID].name, 'is ready')
+
+        let roomID = socketList[UUID].roomID
+        socketList[UUID].ready = 'true'
+        let others = getOtherPlayersInRoom(roomID)
+
+        for (let i = 0; i < others.length; i++) {
+            if (socketList[others[i]].ready !== 'true') {
+                return
+            }
+        }
+
+        io.in(roomID).emit('go', Math.floor(Math.random()*2))
     })
 
     socket.on('done', () => {
-        let room = socketList[UUID].roomID
-        io.in(room).emit('stop')
+        let roomID = socketList[UUID].roomID
+        let others = getAllPlayersInRoom(roomID)
+
+        for (let i = 0; i < others.length; i++) {
+            socketList[others[i]].ready = 'false'
+        }
+
+        io.in(roomID).emit('stop')
     })
 
     socket.on('yo dawg', () => {

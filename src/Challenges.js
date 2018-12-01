@@ -9,10 +9,27 @@ const fib = {
         {"input": 10, "output": 89},
         //{"input": "20", "output": "10946"},
     ],
-    functionName: "fib"
+    initial: "const fibonacci = (n) => {\n\n}",
+    functionName: "fibonacci"
 }
 
-const challenges = [fib]
+const factorial = {
+    instructions: "Return the factorial of N.",
+    examples: 2,
+    tests: [
+        {"input": 3, "output": 6},
+        {"input": 4, "output": 24},
+        {"input": 10, "output": 3628800},
+        {"input": 1, "output": 1},
+        //{"input": "20", "output": "10946"},
+    ],
+    initial: "const factorial = (n) => {\n\n}",
+    functionName: "factorial"
+}
+
+// const fib = (n) => (n == 0 || n ==1 ? 1 : fib(n-1)+fib(n-2))
+
+const challenges = [fib, factorial]
 
 /*
 
@@ -58,7 +75,7 @@ const judgeSubmission = (program, challenge) => {
 
     for (let i = 0; i < challenge.tests.length; i++) {
         if (JSON.stringify(output[i]) !== JSON.stringify(challenge.tests[i].output)) {
-            return {"passed": false, "message": `Failed on test case ${challenge.tests[i].input}.`}
+            return {"passed": false, "message": `Failed on test case ${challenge.tests[i].input}. Expected ${challenge.tests[i].output}, but got ${output[i]}!`}
         }
     }
 
