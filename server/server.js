@@ -107,4 +107,7 @@ io.on('connection', socket => {
 
 http.listen(prod ? 80 : 8080, () => {
     console.log("Server live.")
+    if (prod) {
+        console.log("In production.")
+    }
 })
