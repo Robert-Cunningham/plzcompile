@@ -4,6 +4,7 @@ const bodyparser = require('body-parser')
 const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
+const path = require('path')
 
 const prod = process.env.NODE_ENV === 'production'
 
@@ -15,9 +16,7 @@ app.post('/identify', (req, res) => {
     
 })
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '../build/index.html')
-})
+app.use(express.static(path.resolve(__dirname + '../build')))
 
 let socketList = {}
 
