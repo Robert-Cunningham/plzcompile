@@ -12,14 +12,12 @@ class JoinGame extends React.Component {
             peers: [],
             roomSelection: ""
         }
-
-        this.joinRoom(this.state.room)
-
     }
 
     componentDidMount() {
         this.props.socket.on('new player', (name) => {
             this.setState(prev => ({peers: prev.peers.concat(name)}))
+            console.log('got new player', name)
         })
     }
 
@@ -32,21 +30,35 @@ class JoinGame extends React.Component {
                         <TextField label="Name" placeholder="Pepe" value={this.state.name} onChange={(e) => this.setState({name: e.target.value})}></TextField>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => {this.props.socket.emit('identify', this.state.name); this.setState({mode: 'room'})}}>Next</Button>
+                        <Button onClick={this.onSelectName}>Next</Button>
                     </DialogActions>
                 </Dialog>
             </div>
         )
     }
 
-    joinRoom = (room) => {
-        this.props.socket.emit('join room', room)
+    onSelectName = (name) => {
+        this.props.socket.emit('identify', this.state.name)
+        this.setState({mode: 'room'})
+        this.joinRoom(this.state.room)
     }
+
+    joinRoom = (room) => {
+        this.setState({
+            room: room,
+            roomSelection: "",
+            peers: []
+        }, () => {
+            console.log('joined room')
+            this.props.socket.emit('join room', room)
+        })
+    }
+
 
     renderRooms() {
         return (
             <div>
-                <Dialog onClose={() => this.setState({mode: 'closed'})} open={this.state.mode === 'room'}>
+                <Dialog open={this.state.mode === 'room'}>
                     <DialogTitle>Join a room</DialogTitle>
                     <DialogContent>
                         <div>
@@ -59,11 +71,11 @@ class JoinGame extends React.Component {
                         </div>
                         People who you're about to wreck:
                         <ul>
-                            {this.state.peers.map(p => <li>{p.name}</li>)}
+                            {this.state.peers.map((p, i) => <li key={i}>{p.name}</li>)}
                         </ul>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => this.setState({mode: 'closed'})}>Done</Button>
+                        <Button onClick={this.props.onReady} disabled={this.state.peers.length === 0}>Ready</Button>
                     </DialogActions>
                 </Dialog>
             </div>
@@ -71,6 +83,9 @@ class JoinGame extends React.Component {
     }
 
     render() {
+        if (this.props.state !== "setup") {
+            return null
+        }
         return (
             <div>
                 {this.renderName()}

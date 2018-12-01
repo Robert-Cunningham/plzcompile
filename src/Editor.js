@@ -23,6 +23,14 @@ class Editor extends React.Component {
     componentDidMount() {
     }
 
+    onClickDone = () => {
+        let result = judgeSubmission(this.state.value, challenges[0])
+        console.log(result)
+        if (result.passed) {
+            this.props.onSolve()
+        }
+    }
+
     render() {
         return (
             <div className="editor-container">
@@ -36,7 +44,7 @@ class Editor extends React.Component {
                     width={1000}
                     height={700}
                 />
-                <Button onClick={() => (judgeSubmission(this.state.value, challenges[0]))} >Test!</Button>
+                <Button onClick={this.onClickDone} >Test!</Button>
             </div>
         )
     }

@@ -13,23 +13,48 @@ app.post('/identify', (req, res) => {
     
 })
 
+let socketList = {}
+
+//setInterval(() => console.log(socketList), 500)
+
 io.on('connection', socket => {
     console.log('someone connected')
+    let UUID = JSON.stringify(Math.round(Math.random() * 100000000)) + ""
+    socketList[UUID] = {socket: socket}
 
     socket.on('identify', (name) => {
         console.log('identified as', name)
-        socket.name = name
+        socketList[UUID].name = name
     })
 
     socket.on('join room', (roomID) => {
-        console.log(socket.name, 'joined', roomID)
-        if (socket.roomID) {
-            socket.leave(roomID)
+        roomID = roomID + ""
+        console.log(socketList[UUID].name, 'joined', roomID)
+        if (socketList[UUID].roomID) {
+            socketList[UUID].socket.leave(roomID)
         }
-        socket.roomID = roomID
-        socket.join(JSON.stringify(roomID))
+        socketList[UUID].roomID = roomID
+        io.in(roomID).emit("new player", {name: socketList[UUID].name})
 
-        socket.in(roomID).emit("new player", {name: socket.name})
+        socketList[UUID].socket.join(roomID)
+
+        Object.keys(socketList).map(uuid => { //update the recent connectee's list
+            let s = socketList[uuid]
+            if (s.roomID === roomID && uuid !== UUID) {
+                socket.emit("new player", {name: s.name})
+            }
+        })
+    })
+
+
+    socket.on('ready', () => {
+        let room = socketList[UUID].roomID
+        io.in(room).emit('go')
+    })
+
+    socket.on('done', () => {
+        let room = socketList[UUID].roomID
+        io.in(room).emit('stop')
     })
 
     socket.on('yo dawg', () => {
