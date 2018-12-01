@@ -16,7 +16,7 @@ app.post('/identify', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-    res.send('../build/index.html')
+    res.sendFile(__dirname + '../build/index.html')
 })
 
 let socketList = {}
