@@ -5,12 +5,18 @@ const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
+const prod = process.env.NODE_ENV === 'production'
+
 app.get('/dank', (req, res) => {
     res.send('meme, bro')
 })
 
 app.post('/identify', (req, res) => {
     
+})
+
+app.get('/', (req, res) => {
+    res.send('../build/index.html')
 })
 
 let socketList = {}
@@ -99,6 +105,6 @@ io.on('connection', socket => {
     })
 })
 
-http.listen(8080, () => {
+http.listen(prod ? 80 : 8080, () => {
     console.log("Server live.")
 })

@@ -12,8 +12,10 @@ class App extends Component {
   constructor(props) {
     super(props)
 
+    const prod = process.env.NODE_ENV === 'production'
+
     this.state = {
-      socket: openSocket('localhost:8080'),
+      socket: openSocket(prod ? 'plzcompile.com' : 'localhost:8080'),
       state: "setup",
       won: false,
       challengeID: 0,
