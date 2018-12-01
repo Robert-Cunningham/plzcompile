@@ -8,6 +8,7 @@ const path = require('path')
 
 const prod = process.env.NODE_ENV === 'production'
 
+
 app.get('/dank', (req, res) => {
     res.send('meme, bro')
 })
@@ -51,7 +52,12 @@ io.on('connection', socket => {
         })
     })
 
+    socket.on('disconnect', () => {
+        delete socketList[UUID]
+    })
+
     getOtherPlayersInRoom = (roomID) => {
+        console.log('getting other players in room from perspective of ', UUID)
         let out = []
         Object.keys(socketList).map(uuid => { //update the recent connectee's list
             let s = socketList[uuid]
@@ -59,6 +65,7 @@ io.on('connection', socket => {
                 out.push(uuid)
             }
         })
+        console.log('returning ', out)
 
         return out
     }
@@ -77,9 +84,10 @@ io.on('connection', socket => {
 
         let roomID = socketList[UUID].roomID
         socketList[UUID].ready = 'true'
-        let others = getOtherPlayersInRoom(roomID)
+        let others = getAllPlayersInRoom(roomID)
 
         for (let i = 0; i < others.length; i++) {
+            console.log(socketList[others[i]].name, 'has ready state', socketList[others[i]].ready)
             if (socketList[others[i]].ready !== 'true') {
                 return
             }

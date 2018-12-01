@@ -8,3 +8,39 @@ all {
   align-items: center;
   flex-direction: column;
 }
+
+.room-id {
+  font-size: 70pt;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin: 0px 0px 50px 0px;
+  width: 400px;
+}
+
+.room-id-text {
+  font-style: italic;
+  font-size: 20pt;
+}
+
+.join-room-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.room-switcher-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.others-in-room-container {
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+}
+
+.others-in-room-header {
+  margin: 50px auto;
+}

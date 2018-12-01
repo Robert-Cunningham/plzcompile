@@ -31,6 +31,12 @@ const factorial = {
 
 const challenges = [fib, factorial]
 
+let leadingComment = (challenge) => {
+    return "// " + challenge.instructions + "\n// Examples:\n" + challenge.tests.splice(0, challenge.examples).map( e => 
+        "// " + challenge.functionName + "(" + e.input + ") => " + e.output
+        ).join("\n") + "\n\n"
+}
+
 /*
 
 
@@ -84,4 +90,4 @@ const judgeSubmission = (program, challenge) => {
 }
 
 
-export {challenges, judgeSubmission}
+export {challenges, judgeSubmission, leadingComment}

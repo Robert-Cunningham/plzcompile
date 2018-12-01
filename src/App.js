@@ -24,7 +24,6 @@ class App extends Component {
 
   componentDidMount() {
     this.state.socket.on('go', (data) => {
-      console.log('go info', data)
       this.setState({state: "instructions", challengeID: data})
     })
 
@@ -43,6 +42,10 @@ class App extends Component {
     this.state.socket.emit("ready")
   }
 
+  onWaiting = () => {
+    this.setState({state: 'waiting'})
+  }
+
   resetGame = () => {
     this.setState({
       won: false,
@@ -53,7 +56,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        {this.state.socket && <JoinGame state={this.state.state} onReady={this.onReady} socket={this.state.socket}/>}
+        {this.state.socket && <JoinGame waiting={this.state.state === 'waiting'} onWaiting={this.onWaiting} state={this.state.state} onReady={this.onReady} socket={this.state.socket}/>}
         {this.state.state == 'playing' && <Editor onSolve={this.onSolve} challenge={challenges[this.state.challengeID]}/>}
         <GameOverDialog done={this.state.state === 'done'} won={this.state.won} resetGame={this.resetGame}/>
         {this.state.state === 'instructions' && <InstructionsDialog active={this.state.state === 'instructions'} challenge={challenges[this.state.challengeID]} startGame={() => this.setState({state: "playing"})}/>}

@@ -1,7 +1,7 @@
 import React from 'react'
 import AceEditor from 'react-ace'
 import brace from 'brace';
-import {judgeSubmission, challenges} from './Challenges'
+import {judgeSubmission, challenges, leadingComment} from './Challenges'
 import {Button} from '@material-ui/core'
 
 import 'brace/mode/javascript'
@@ -12,7 +12,7 @@ class Editor extends React.Component {
         super(props)
 
         this.state = {
-            value: props.challenge.initial
+            value: leadingComment(props.challenge) + props.challenge.initial
         }
     }
 

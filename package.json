@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.6.0",
+    "random-words": "^1.1.0",
     "react": "^16.6.3",
     "react-ace": "^6.2.0",
     "react-dom": "^16.6.3",

@@ -1,5 +1,6 @@
 import React from 'react'
 import {Dialog, DialogTitle, TextField, DialogActions, Button, DialogContent, LinearProgress} from '@material-ui/core'
+const randomWords = require('random-words')
 
 class JoinGame extends React.Component {
     constructor(props) {
@@ -8,9 +9,9 @@ class JoinGame extends React.Component {
         this.state = {
             name: "",
             mode: "name",
-            room: 0,//Math.round(Math.random() * 100),
+            room: Math.round(Math.random() * 100),
             peers: [],
-            roomSelection: ""
+            roomSelection: "",
         }
     }
 
@@ -27,7 +28,7 @@ class JoinGame extends React.Component {
                 <Dialog open={this.state.mode === 'name'}>
                     <DialogTitle>Who dis?</DialogTitle>
                     <DialogContent>
-                        <TextField label="Name" placeholder="Pepe" value={this.state.name} onChange={(e) => this.setState({name: e.target.value})}></TextField>
+                        <TextField label="Nickname" placeholder="Pepe" value={this.state.name} onChange={(e) => this.setState({name: e.target.value})}></TextField>
                     </DialogContent>
                     <DialogActions>
                         <Button disabled={this.state.name.length === 0} onClick={this.onSelectName}>Next</Button>
@@ -55,8 +56,8 @@ class JoinGame extends React.Component {
     }
 
     onReady = () => {
+        this.props.onWaiting()
         this.props.onReady()
-        this.setState({waiting: true})
     }
 
 
@@ -66,21 +67,29 @@ class JoinGame extends React.Component {
                 <Dialog open={this.state.mode === 'room'}>
                     <DialogTitle>Join a room</DialogTitle>
                     <DialogContent>
-                        <div>
-                            Have somebody else join your room: {this.state.room} <br></br><br></br>
-                        </div>
-                        <div>
-                            Or join someone else's room: 
-                            <TextField value={this.state.roomSelection} onChange={(e) => this.setState({roomSelection: e.target.value})}></TextField>
-                            <Button onClick={() => this.joinRoom(this.state.roomSelection)}>Join</Button>
-                        </div>
-                        People who you're about to wreck:
-                        <ul>
-                            {this.state.peers.map((p, i) => <li key={i}>{p.name}</li>)}
-                        </ul>
+                        <div className="join-room-container">
+                            <div className="room-id">
+                                <div className="room-id">{this.state.room}</div>
+                                <div className="room-id-text">Your room</div>
+                            </div>
 
-                        {this.state.waiting && "Waiting for other players to ready up."}
-                        {this.state.waiting && <LinearProgress />}
+                            <div className="room-switcher-container">
+                                <TextField variant="outlined" placeholder="54" label="Join another room" value={this.state.roomSelection} onChange={(e) => this.setState({roomSelection: e.target.value})}></TextField>
+                                <Button variant="outlined" onClick={() => this.joinRoom(this.state.roomSelection)}>Join</Button>
+                            </div>
+
+                            <div className="others-in-room-container">
+                            <div className="others-in-room-header">
+                                    In this room:
+                            </div>
+                                <ul>
+                                    {this.state.peers.map((p, i) => <li key={i}>{p.name}</li>)}
+                                </ul>
+                            </div>
+
+                            {this.props.waiting && "Waiting for other players to ready up."}
+                            {this.props.waiting && <LinearProgress />}
+                        </div>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.onReady} disabled={this.state.peers.length === 0}>Ready</Button>
@@ -91,14 +100,13 @@ class JoinGame extends React.Component {
     }
 
     render() {
-        if (this.props.state !== "setup") {
+        if (this.props.state !== "setup" && this.props.state !== 'waiting') {
             return null
         }
         return (
             <div>
                 {this.renderName()}
                 {this.renderRooms()}
-                <Button onClick={() => this.setState({mode: "room"})}>Pick a room</Button>
             </div>
         )
     }
