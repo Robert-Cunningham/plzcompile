@@ -21,6 +21,10 @@ app.use(express.static(path.resolve(__dirname + '/../build')))
 
 let socketList = {}
 
+let roomProblemIndex = {}
+
+const problemCount = 6
+
 //setInterval(() => console.log(socketList), 500)
 
 io.on('connection', socket => {
@@ -93,7 +97,13 @@ io.on('connection', socket => {
             }
         }
 
-        io.in(roomID).emit('go', Math.floor(Math.random()*2))
+        if (!roomProblemIndex[roomID]) {
+            roomProblemIndex[roomID] = -1
+        }
+
+        roomProblemIndex[roomID] = (roomProblemIndex[roomID] + 1) % problemCount
+
+        io.in(roomID).emit('go', roomProblemIndex[roomID])
     })
 
     socket.on('done', () => {

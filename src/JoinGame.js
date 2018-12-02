@@ -9,7 +9,7 @@ class JoinGame extends React.Component {
         this.state = {
             name: "",
             mode: "name",
-            room: Math.round(Math.random() * 100),
+            room: Math.round(Math.random() * 0),
             peers: [],
             roomSelection: "",
         }

@@ -2,7 +2,7 @@ import React from 'react'
 import AceEditor from 'react-ace'
 import brace from 'brace';
 import {judgeSubmission, challenges, leadingComment} from './Challenges'
-import {Button} from '@material-ui/core'
+import {Dialog, DialogTitle, TextField, DialogActions, Button, DialogContent, CircularProgress, LinearProgress} from '@material-ui/core'
 
 import 'brace/mode/javascript'
 import 'brace/theme/monokai'
@@ -12,7 +12,8 @@ class Editor extends React.Component {
         super(props)
 
         this.state = {
-            value: leadingComment(props.challenge) + props.challenge.initial
+            value: leadingComment(props.challenge) + props.challenge.initial,
+            result: undefined
         }
     }
 
@@ -28,6 +29,8 @@ class Editor extends React.Component {
         console.log(result)
         if (result.passed) {
             this.props.onSolve()
+        } else {
+            this.setState({result: result})
         }
     }
 
@@ -44,10 +47,30 @@ class Editor extends React.Component {
                     width={1000}
                     height={700}
                 />
-                <Button onClick={this.onClickDone} >Test!</Button>
+                <Button variant="outlined" onClick={this.onClickDone} >Submit!</Button>
+                <FailedToCompile result={this.state.result} onClose={() => this.setState({result: undefined})}/>
             </div>
         )
     }
 }
+
+const FailedToCompile = (props) => (
+    <Dialog onClose={props.onClose} open={Boolean(props.result)}>
+        <DialogTitle>
+            Failed.
+        </DialogTitle>
+        <DialogContent>
+            <div className="error-container">
+                <div className="exception-text">
+                    {props.result && props.result.message}
+                </div>
+                <img className="facepalm" src='https://ballzbeatz.com/wp-content/uploads/2018/01/Meme-s-Facepalm-Meme-Decal.jpg' width={300} height={300} />
+            </div>
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={props.onClose}>OK</Button>
+        </DialogActions>
+    </Dialog>
+)
 
 export default Editor

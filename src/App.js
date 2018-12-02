@@ -16,7 +16,8 @@ class App extends Component {
 
     this.state = {
       socket: openSocket(prod ? 'game.plzcompile.com' : 'localhost:8080'),
-      state: "setup",
+      //state: "setup",
+      state: "playing",
       won: false,
       challengeID: 0,
     }

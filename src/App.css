@@ -44,3 +44,17 @@ all {
 .others-in-room-header {
   margin: 50px auto;
 }
+
+.exception-text {
+  color: maroon;
+}
+
+.facepalm {
+  margin: 50px;
+}
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}

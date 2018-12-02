@@ -13,6 +13,8 @@ class Instructions extends React.Component {
 
     }
 
+    //let tooltips = ["Get hyped", ""]
+
     componentDidMount() {
         setTimeout(() => {
             //this.props.startGame()
@@ -33,21 +35,22 @@ class Instructions extends React.Component {
             <div>
                 <Dialog open={this.props.active}>
                     <DialogTitle>
-                        Welcome to Plz Compile. 
+                        You're playing gamemode "Zero Infinite Loop."
                     </DialogTitle>
                     <DialogContent>
-                        You're playing gamemode "Zero Infinite Loop."
+                        <div>
+                            {this.props.challenge.instructions}
+                        </div>
 
-                        Your challenge is as follows:
-                        {this.props.challenge.instructions}
-
-                        Examples:
-                        <ol>
-                            {this.props.challenge.tests.slice(0, this.props.challenge.examples).map(e => (
-                                <li key={e.input}>{e.input} => {e.output}</li>
-                            ))}
-                        </ol>
-                        {audioLive && <audio src="mario.mp3" autoPlay onEnded={this.props.startGame}/>}
+                        <div>
+                            Examples:
+                            <ol>
+                                {this.props.challenge.tests.slice(0, this.props.challenge.examples).map(e => (
+                                    <li key={e.input}>{e.input} => {e.output}</li>
+                                ))}
+                            </ol>
+                        </div>
+                        {audioLive && <audio muted src="mario.mp3" autoPlay onEnded={this.props.startGame}/>}
                         <LinearProgress variant="determinate" value={pct}/>
                     </DialogContent>
                 </Dialog>
